@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Pour ma reine</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Parisienne&family=Lora:ital,wght@0,400;0,500;1,400&display=swap">
+<style>
+/* Mise en page : la lettre defile a gauche, le bouquet reste fixe a droite et pousse au fil du defilement ; sur telephone, bouquet en haut et lettre dessous. Look unique rose + creme (pas de theme sombre, choix voulu). */
+:root{
+  --creme:#fbf3ea;
+  --creme-2:#f5e2d8;
+  --rose:#e88aa7;
+  --rose-pale:#f8d6e0;
+  --rose-fonce:#b23d67;
+  --encre:#5a2a3b;
+  --f-script:"Parisienne","Brush Script MT","Segoe Script",cursive;
+  --f-texte:"Lora",Georgia,"Times New Roman",serif;
+  color-scheme:light;
+}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--creme);color:var(--encre);font-family:var(--f-texte);font-size:1.125rem;line-height:1.75}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--creme)}
+.fond{position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(40rem 30rem at 10% 0%,var(--rose-pale),transparent 70%),
+    radial-gradient(36rem 28rem at 95% 100%,var(--creme-2),transparent 70%);}
+
+.histoire{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:2rem;max-width:1180px;margin:0 auto;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.scene{order:2;position:sticky;top:0;align-self:start;height:100vh;height:100svh;display:flex;align-items:center;justify-content:center}
+.scene svg{width:100%;max-width:500px;max-height:94svh;height:auto;overflow:visible}
+.lettre{order:1;min-width:0}
+
+.bloc{min-height:85vh;min-height:85svh;display:flex;flex-direction:column;justify-content:center;gap:1rem;max-width:32rem;padding-block:3rem}
+.sur-titre{margin:0;font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--rose-fonce)}
+h1,h2{font-family:var(--f-script);font-weight:400;color:var(--rose-fonce);margin:0;line-height:1.05;text-wrap:balance}
+h1{font-size:clamp(4rem,11vw,7rem)}
+h2{font-size:clamp(2.4rem,5vw,3.2rem)}
+.bloc p{margin:0}
+.bloc p.texte{max-width:30rem}
+.indice{display:flex;align-items:center;gap:.75rem;margin-top:1.5rem;font-size:.85rem;letter-spacing:.15em;text-transform:uppercase;color:var(--rose-fonce)}
+.indice span{position:relative;width:1px;height:42px;background:var(--rose-pale);overflow:hidden}
+.indice span::after{content:"";position:absolute;left:0;top:-40%;width:1px;height:40%;background:var(--rose-fonce);animation:goutte 1.8s ease-in-out infinite}
+@keyframes goutte{to{top:100%}}
+
+.question{min-height:100vh;min-height:100svh;text-align:center;align-items:center;max-width:none}
+.question h2{font-size:clamp(2.8rem,7vw,4.4rem)}
+.choix{display:flex;gap:1.25rem;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:1rem;min-height:4rem}
+.btn{font:500 1.15rem/1 var(--f-texte);padding:.95rem 2.4rem;border-radius:999px;border:1.5px solid var(--rose-fonce);cursor:pointer;
+  transition:transform .25s ease,left .3s ease,top .3s ease,background-color .2s}
+.btn:focus-visible{outline:3px solid var(--rose);outline-offset:3px}
+.oui{background:var(--rose-fonce);color:var(--creme);box-shadow:0 8px 24px -10px var(--rose-fonce)}
+.oui:hover{background:var(--encre)}
+.non{background:var(--creme);color:var(--rose-fonce);z-index:30;white-space:nowrap}
+.taquin{min-height:1.75em;font-style:italic;color:var(--rose-fonce)}
+
+.merci{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;
+  padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
+  background:rgba(90,42,59,.35);backdrop-filter:blur(4px)}
+.merci[hidden]{display:none}
+.carte{background:var(--creme);border-radius:28px;padding:2.5rem 2rem;max-width:26rem;text-align:center;display:flex;flex-direction:column;gap:1rem;align-items:center;
+  box-shadow:0 30px 60px -20px rgba(90,42,59,.45)}
+.carte h2{font-size:clamp(2.6rem,8vw,3.4rem)}
+.carte p{margin:0}
+#petales{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50}
+
+.tige{fill:none;stroke:#6f9470;stroke-width:3.2;stroke-linecap:round}
+.tige.fine{stroke:#93ad8e;stroke-width:1.4}
+
+@media (max-width:760px){
+  .histoire{grid-template-columns:minmax(0,1fr);gap:0}
+  .scene{order:0;top:env(safe-area-inset-top,0px);height:50vh;height:50svh;z-index:1;
+    background:linear-gradient(var(--creme) 82%,rgba(251,243,234,0))}
+  .scene svg{max-height:48svh}
+  .bloc{min-height:55vh;min-height:55svh;padding-block:2rem}
+  .question{min-height:50vh;min-height:50svh}
+  body{font-size:1.05rem}
+}
+@media (prefers-reduced-motion:reduce){.indice span::after{animation:none}.btn{transition:none}}
+</style>
+
+</head>
+<body>
+<div class="fond" aria-hidden="true"></div>
+
+<main class="histoire">
+  <div class="scene">
+    <svg id="bouquet" viewBox="0 0 400 580" role="img" aria-label="Un bouquet de roses, tulipes et petites fleurs blanches qui pousse au fil de la lecture">
+      <defs>
+        <linearGradient id="papier" x1="0" x2="1">
+          <stop offset="0" stop-color="#fffaf4"/><stop offset=".5" stop-color="#f6e4d9"/><stop offset="1" stop-color="#fffaf4"/>
+        </linearGradient>
+        <linearGradient id="papierDos" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#f9dbe4"/><stop offset="1" stop-color="#f3c6d3"/>
+        </linearGradient>
+      </defs>
+      <path d="M200 545 L62 262 Q130 236 200 246 Q270 236 338 262 Z" fill="url(#papierDos)"/>
+      <g id="tiges"></g>
+      <g id="feuilles"></g>
+      <g id="fleurs"></g>
+      <path d="M200 552 L108 350 Q156 384 200 370 Q244 384 292 350 Z" fill="url(#papier)" stroke="#ead2c7" stroke-width="1.2"/>
+      <path d="M200 552 L150 372 M200 552 L250 372" stroke="#ecd8cd" stroke-width="1" fill="none"/>
+      <g id="ruban" opacity="0">
+        <path d="M200 470 C176 446 150 450 154 468 C150 488 178 492 200 470Z" fill="#e88aa7"/>
+        <path d="M200 470 C224 446 250 450 246 468 C250 488 222 492 200 470Z" fill="#e88aa7"/>
+        <path d="M197 474 L176 528 L186 522 L192 534 L203 476Z" fill="#d86f92"/>
+        <path d="M203 474 L224 528 L214 522 L208 534 L197 476Z" fill="#d86f92"/>
+        <circle cx="200" cy="471" r="7" fill="#c9557d"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="lettre">
+    <section class="bloc">
+      <p class="sur-titre">Une lettre pour</p>
+      <h1>Ma reine</h1>
+      <p class="texte">Prends ton temps. Descends doucement : à chaque pas, une fleur pousse pour toi.</p>
+      <div class="indice" aria-hidden="true"><span></span>Descends</div>
+    </section>
+
+    <section class="bloc">
+      <h2>Pardon</h2>
+      <p class="texte">Je sais que je t'ai blessée. Je ne vais pas chercher d'excuse, ni faire comme si ce n'était rien.</p>
+    </section>
+
+    <section class="bloc">
+      <h2>J'ai eu tort</h2>
+      <p class="texte">Mes mots et mes gestes n'étaient pas à la hauteur de la femme que tu es. Tu méritais mieux que ça, et je le sais.</p>
+    </section>
+
+    <section class="bloc">
+      <h2>Ce que tu mérites</h2>
+      <p class="texte">De la douceur, du respect, de l'écoute et toute mon attention. Ce jour-là, je ne t'ai rien donné de tout ça. Je le regrette sincèrement.</p>
+    </section>
+
+    <section class="bloc">
+      <h2>Ces fleurs</h2>
+      <p class="texte">Je les ai fait pousser une à une, avec patience. C'est comme ça que je veux réparer les choses : pas avec de grandes phrases, petit à petit, avec des actes.</p>
+    </section>
+
+    <section class="bloc">
+      <h2>Ma promesse</h2>
+      <p class="texte">Je vais faire mieux. T'écouter vraiment, réfléchir avant de parler, et te montrer chaque jour à quel point tu comptes pour moi.</p>
+    </section>
+
+    <section class="bloc question" id="question">
+      <h2>Tu me pardonnes, ma reine&nbsp;?</h2>
+      <div class="choix">
+        <button type="button" id="oui" class="btn oui">Oui</button>
+        <button type="button" id="non" class="btn non">Non</button>
+      </div>
+      <p class="taquin" id="taquin" aria-live="polite"></p>
+    </section>
+  </div>
+</main>
+
+<div class="merci" id="merci" hidden role="dialog" aria-modal="true" aria-labelledby="merci-titre">
+  <div class="carte">
+    <p class="sur-titre">Pour toi</p>
+    <h2 id="merci-titre">Merci, ma reine</h2>
+    <p>Ce pardon est précieux. Je vais en prendre soin, et te le prouver chaque jour.</p>
+    <button type="button" id="fermer" class="btn oui">Fermer</button>
+  </div>
+</div>
+<canvas id="petales" aria-hidden="true"></canvas>
+
+<script>
+(() => {
+  const NS = "http://www.w3.org/2000/svg";
+  const $ = s => document.querySelector(s);
+  const clamp = v => Math.max(0, Math.min(1, v));
+  const easeOut = t => 1 - Math.pow(1 - t, 3);
+  const backOut = t => { const c1 = 1.70158, c3 = c1 + 1; return t <= 0 ? 0 : 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); };
+  const reduit = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function el(tag, attrs, parent) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function petale(g, w, h, fill, rot, stroke) {
+    el("path", {
+      d: `M0 0 C${-w} ${-h * .35} ${-w * .8} ${-h} 0 ${-h} C${w * .8} ${-h} ${w} ${-h * .35} 0 0Z`,
+      fill, transform: `rotate(${rot})`, stroke: stroke || "rgba(120,40,70,.18)", "stroke-width": .8
+    }, g);
+  }
+
+  // Dessins de fleurs, centres sur l'origine
+  const dessins = {
+    rose(g, r, c) {
+      for (let k = 0; k < 7; k++) petale(g, r * .55, r, c[0], k * 360 / 7);
+      for (let k = 0; k < 6; k++) petale(g, r * .45, r * .72, c[1], k * 60 + 25);
+      for (let k = 0; k < 5; k++) petale(g, r * .35, r * .46, c[2], k * 72 + 10);
+      el("circle", { r: r * .16, fill: c[2] }, g);
+      el("path", { d: `M${-r * .08} 0 a${r * .08} ${r * .08} 0 1 1 ${r * .1} ${r * .06}`, fill: "none", stroke: "rgba(255,240,245,.7)", "stroke-width": 1.2 }, g);
+    },
+    fleur(g, r, c) {
+      for (let k = 0; k < 5; k++) petale(g, r * .6, r, c[0], k * 72, c[1]);
+      el("circle", { r: r * .22, fill: c[2] }, g);
+      for (let k = 0; k < 6; k++) {
+        const a = k * Math.PI / 3;
+        el("circle", { cx: Math.cos(a) * r * .32, cy: Math.sin(a) * r * .32, r: 1.6, fill: "#c98f3a" }, g);
+      }
+    },
+    tulipe(g, r, c) {
+      el("path", { d: `M0 ${r * .5} C${-r * .9} ${r * .3} ${-r * .8} ${-r * .6} ${-r * .35} ${-r} C${-r * .1} ${-r * .5} ${r * .1} ${-r * .5} ${r * .35} ${-r} C${r * .8} ${-r * .6} ${r * .9} ${r * .3} 0 ${r * .5}Z`, fill: c[1] }, g);
+      el("path", { d: `M0 ${r * .55} C${-r * .6} ${r * .4} ${-r * .55} ${-r * .5} 0 ${-r * .9} C${r * .55} ${-r * .5} ${r * .6} ${r * .4} 0 ${r * .55}Z`, fill: c[0], stroke: "rgba(120,40,70,.15)", "stroke-width": .8 }, g);
+    },
+    bouton(g, r, c) {
+      petale(g, r * .6, r * 1.4, c[0], 0, c[1]);
+      el("path", { d: `M0 2 C-6 -2 -10 -8 -9 -14 C-4 -9 -1 -6 0 2Z`, fill: "#7fa07c" }, g);
+      el("path", { d: `M0 2 C6 -2 10 -8 9 -14 C4 -9 1 -6 0 2Z`, fill: "#7fa07c" }, g);
+    }
+  };
+
+  const FLEURS = [
+    { x: 200, y: 190, t: "rose",   r: 48, c: ["#f6b9cb", "#e98aa8", "#c9557d"], d: .04 },
+    { x: 128, y: 238, t: "rose",   r: 38, c: ["#fbd5df", "#f0a3bb", "#d66f92"], d: .12 },
+    { x: 274, y: 234, t: "rose",   r: 40, c: ["#fbd5df", "#f0a3bb", "#d66f92"], d: .19 },
+    { x: 156, y: 122, t: "tulipe", r: 30, c: ["#f2a0b9", "#d9668c"], d: .26 },
+    { x: 250, y: 114, t: "tulipe", r: 30, c: ["#f7c0cf", "#e58aa6"], d: .32 },
+    { x: 84,  y: 168, t: "fleur",  r: 28, c: ["#fffaf5", "#f2cbd6", "#e8b44f"], d: .38 },
+    { x: 318, y: 162, t: "fleur",  r: 28, c: ["#fffaf5", "#f2cbd6", "#e8b44f"], d: .44 },
+    { x: 204, y: 86,  t: "fleur",  r: 24, c: ["#fde3ea", "#f0b2c4", "#e8b44f"], d: .50 },
+    { x: 150, y: 302, t: "bouton", r: 14, c: ["#f0a3bb", "#d66f92"], d: .56 },
+    { x: 254, y: 304, t: "bouton", r: 14, c: ["#f0a3bb", "#d66f92"], d: .60 }
+  ];
+  const GYPSO = [[110, 100], [298, 90], [56, 232], [344, 226], [174, 52], [236, 46]];
+
+  const gTiges = $("#tiges"), gFeuilles = $("#feuilles"), gFleurs = $("#fleurs"), ruban = $("#ruban");
+  const items = [];
+
+  function tige(x, y, fine) {
+    const x0 = 200 + (x - 200) * .1, y0 = 450;
+    const p = el("path", { d: `M${x0} ${y0} Q${x0 + (x - x0) * .2} ${y + (y0 - y) * .45} ${x} ${y}`, class: fine ? "tige fine" : "tige" }, gTiges);
+    const L = p.getTotalLength();
+    p.style.strokeDasharray = L;
+    p.style.strokeDashoffset = L;
+    return [p, L];
+  }
+
+  FLEURS.forEach((f, i) => {
+    const side = f.x < 200 ? -1 : f.x > 200 ? 1 : (i % 2 ? 1 : -1);
+    const [t, L] = tige(f.x, f.y + f.r * .35);
+    let feuille = null, pt = null, ang = 0;
+    if (f.t !== "bouton") {
+      pt = t.getPointAtLength(L * .68);
+      ang = side < 0 ? 205 : -25;
+      feuille = el("g", {}, gFeuilles);
+      el("path", { d: "M0 0 C9 -8 24 -8 34 0 C24 8 9 8 0 0Z", fill: i % 2 ? "#8db08a" : "#7fa07c" }, feuille);
+      el("path", { d: "M2 0 L30 0", stroke: "#5f845c", "stroke-width": 1, fill: "none" }, feuille);
+    }
+    const g = el("g", { opacity: 0 }, gFleurs);
+    dessins[f.t](g, f.r, f.c);
+    items.push({ ...f, side, tige: t, L, feuille, pt, ang, g, dTige: .14, dFleur: .14 });
+  });
+
+  GYPSO.forEach(([x, y], i) => {
+    const [t, L] = tige(x, y, true);
+    const g = el("g", { opacity: 0 }, gFleurs);
+    [[0, 0], [-7, -5], [7, -4], [-4, 6], [5, 6], [0, -10]].forEach(([dx, dy]) =>
+      el("circle", { cx: dx, cy: dy, r: 3.4, fill: "#fffdf8", stroke: "#ead3cb", "stroke-width": .8 }, g));
+    items.push({ x, y, side: x < 200 ? -1 : 1, tige: t, L, g, d: .62 + i * .035, dTige: .1, dFleur: .08 });
+  });
+
+  function dessiner(p) {
+    for (const it of items) {
+      const sp = clamp((p - it.d) / it.dTige);
+      const bp = clamp((p - it.d - it.dTige * .72) / it.dFleur);
+      it.tige.style.strokeDashoffset = it.L * (1 - sp);
+      if (it.feuille) {
+        const lp = easeOut(clamp((sp - .7) / .3));
+        it.feuille.setAttribute("transform", `translate(${it.pt.x} ${it.pt.y}) rotate(${it.ang}) scale(${lp})`);
+      }
+      it.g.setAttribute("opacity", bp > 0 ? 1 : 0);
+      it.g.setAttribute("transform", `translate(${it.x} ${it.y}) rotate(${(1 - bp) * -40 * it.side}) scale(${backOut(bp)})`);
+    }
+    const rp = clamp((p - .86) / .1);
+    ruban.setAttribute("opacity", rp);
+    ruban.setAttribute("transform", `translate(200 470) scale(${backOut(rp)}) translate(-200 -470)`);
+  }
+
+  const histoire = $(".histoire");
+  let attente = false;
+  function surDefilement() {
+    if (attente) return;
+    attente = true;
+    requestAnimationFrame(() => {
+      attente = false;
+      const r = histoire.getBoundingClientRect();
+      dessiner(clamp(-r.top / Math.max(1, r.height - innerHeight)));
+    });
+  }
+  addEventListener("scroll", surDefilement, { passive: true });
+  addEventListener("resize", surDefilement);
+  surDefilement();
+
+  // Le bouton "Non" qui fuit
+  const oui = $("#oui"), non = $("#non"), taquin = $("#taquin");
+  const repliques = ["Tu es sûre ?", "Réfléchis encore un peu…", "Ce bouton est très timide.", "Il ne se laisse pas attraper.", "Le « Oui » est juste là.", "Promis, il ne mord pas, le « Oui »."];
+  let fuites = 0;
+
+  function chevauche(x, y, w, h, r, m) {
+    return x < r.right + m && x + w > r.left - m && y < r.bottom + m && y + h > r.top - m;
+  }
+  function fuir(e) {
+    if (e) e.preventDefault();
+    const b = non.getBoundingClientRect(), o = oui.getBoundingClientRect();
+    const m = 24, vw = innerWidth, vh = innerHeight;
+    if (non.style.position !== "fixed") {
+      non.style.position = "fixed";
+      non.style.left = b.left + "px";
+      non.style.top = b.top + "px";
+      non.offsetWidth; // fixe la position de depart pour que la transition joue
+    }
+    let x, y, essais = 0;
+    do {
+      x = m + Math.random() * Math.max(0, vw - b.width - 2 * m);
+      y = m + Math.random() * Math.max(0, vh - b.height - 2 * m);
+      essais++;
+    } while (essais < 30 && (chevauche(x, y, b.width, b.height, o, 24) || Math.hypot(x - b.left, y - b.top) < 140));
+    non.style.left = x + "px";
+    non.style.top = y + "px";
+    taquin.textContent = repliques[fuites % repliques.length];
+    fuites++;
+    oui.style.transform = `scale(${Math.min(1 + fuites * .08, 1.6)})`;
+  }
+  ["pointerenter", "pointerdown", "click"].forEach(t => non.addEventListener(t, fuir));
+
+  // Remet "Non" a sa place quand on quitte la question
+  new IntersectionObserver(([e]) => {
+    if (!e.isIntersecting) { non.style.position = non.style.left = non.style.top = ""; }
+  }).observe($("#question"));
+
+  // "Oui" : merci + pluie de petales
+  const merci = $("#merci");
+  oui.addEventListener("click", () => {
+    merci.hidden = false;
+    non.style.position = non.style.left = non.style.top = "";
+    taquin.textContent = "";
+    $("#fermer").focus();
+    if (!reduit) pluie();
+  });
+  $("#fermer").addEventListener("click", () => { merci.hidden = true; oui.focus(); });
+  addEventListener("keydown", e => { if (e.key === "Escape" && !merci.hidden) $("#fermer").click(); });
+
+  function pluie() {
+    const cv = $("#petales"), ctx = cv.getContext("2d");
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    const w = innerWidth, h = innerHeight;
+    cv.width = w * dpr; cv.height = h * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const couleurs = ["#f6b9cb", "#e98aa8", "#fbd5df", "#fffaf5", "#d66f92"];
+    const ps = Array.from({ length: 80 }, () => ({
+      x: Math.random() * w, y: -Math.random() * h, r: 6 + Math.random() * 8,
+      vy: 1.2 + Math.random() * 2, vx: -.5 + Math.random(), a: Math.random() * 6.28, va: -.04 + Math.random() * .08,
+      c: couleurs[Math.floor(Math.random() * couleurs.length)]
+    }));
+    const fin = performance.now() + 6500;
+    (function pas(t) {
+      ctx.clearRect(0, 0, w, h);
+      let visibles = 0;
+      for (const p of ps) {
+        p.x += p.vx + Math.sin(p.y / 45) * .7; p.y += p.vy; p.a += p.va;
+        if (p.y > h + 20 && t < fin) { p.y = -20; p.x = Math.random() * w; }
+        if (p.y < h + 20) visibles++;
+        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.a);
+        ctx.fillStyle = p.c; ctx.globalAlpha = .9;
+        ctx.beginPath(); ctx.ellipse(0, 0, p.r, p.r * .55, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+      }
+      if (visibles) requestAnimationFrame(pas); else ctx.clearRect(0, 0, w, h);
+    })(performance.now());
+  }
+})();
+</script>
+
+</body>
+</html>
